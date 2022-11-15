@@ -2,6 +2,7 @@ package com.example.crudeop;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -42,6 +43,44 @@ public class DBhelper extends SQLiteOpenHelper {
             return true;
         }
     }
+    public Boolean updateuserdata(String name,String contact,String dob){
+        SQLiteDatabase DB =this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("contact",contact);
+        cv.put("dob",dob);
+        Cursor cur= DB.rawQuery("select * from userdetails where name=?",new String[]{name});
+        if(cur.getCount()>0){
+            long result = DB.update("userdetails",cv,"name=?",new String[]{name});
+            if (result == -1){
+                return false;
+            }
+            else
+                return true;
+        }
+        else
+            return false;
+    }
+    public Boolean deleteuserdata(String name){
+        SQLiteDatabase DB =this.getWritableDatabase();
+        Cursor cur= DB.rawQuery("select * from userdetails where name=?",new String[]{name});
+        if(cur.getCount()>0){
+            long result = DB.delete("userdetails","name=?",new String[]{name});
+            if (result == -1){
+                return false;
+            }
+            else
+                return true;
+        }
+        else
+            return false;
+    }
+
+    public Cursor getdata(){
+        SQLiteDatabase DB=this.getWritableDatabase();
+        Cursor cursor=DB.rawQuery("Select * from userdetails",null);
+        return cursor;
+    }
+
 
 
 }
